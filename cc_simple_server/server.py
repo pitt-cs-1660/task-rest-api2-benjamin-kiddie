@@ -46,7 +46,7 @@ async def create_task(task_data: TaskCreate):
     conn.commit()
     task_id = cursor.lastrowid
 
-    cursor.execute("SELECT * FROM tasks WHERE id = ?", (task_id))
+    cursor.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
     added_row = cursor.fetchone()
 
     conn.close()
@@ -54,7 +54,7 @@ async def create_task(task_data: TaskCreate):
     if added_row:
         return TaskRead(id=added_row[0], title=added_row[1], description=added_row[2], completed=added_row[3])
     else:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to add task.")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to add task")
 
 
 # GET ROUTE to get all tasks
@@ -111,7 +111,7 @@ async def update_task(task_id: int, task_data: TaskCreate):
     if updated_row:
         return TaskRead(id=updated_row[0], title=updated_row[1], description=updated_row[2], completed=updated_row[3])
     else:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
 
 
 # DELETE ROUTE task_id is in the URL
@@ -141,4 +141,4 @@ async def delete_task(task_id: int):
     if rows_deleted == 0:
         raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail="Task not found")
     
-    return {"message": f"Successfully deleted task with id {task_id}."}
+    return {"message": f"Task {task_id} deleted successfully"}
